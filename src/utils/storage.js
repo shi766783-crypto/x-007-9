@@ -24,6 +24,24 @@ export function remove(key) {
   localStorage.removeItem(NAMESPACE + key)
 }
 
+// 读取命名空间下的全部数据（键名不含命名空间前缀），用于数据备份
+export function readAll() {
+  const data = {}
+  for (let i = 0; i < localStorage.length; i++) {
+    const fullKey = localStorage.key(i)
+    if (fullKey && fullKey.startsWith(NAMESPACE)) {
+      const key = fullKey.slice(NAMESPACE.length)
+      try {
+        const raw = localStorage.getItem(fullKey)
+        data[key] = raw === null ? null : JSON.parse(raw)
+      } catch {
+        data[key] = null
+      }
+    }
+  }
+  return data
+}
+
 export function clearAll() {
   const keys = []
   for (let i = 0; i < localStorage.length; i++) {
